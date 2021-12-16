@@ -1,0 +1,23 @@
+[
+  {
+    "model": "students_app.student",
+    "fields": {
+      "full_name": "Darian Ser",
+      "year": 1
+    }
+  },
+  {
+    "model": "students_app.student",
+    "fields": {
+      "full_name": "Andrei Bej",
+      "year": 1
+    }
+  },
+  {
+    "model": "students_app.student",
+    "fields": {
+      "full_name": "Tanase Ion",
+      "year": 3
+    }
+  }
+]
