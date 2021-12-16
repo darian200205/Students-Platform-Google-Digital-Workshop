@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Lista cursuri</h1>
+
+<table class="table table-responsive">
+
+    <thead>
+        <tr>
+            <td>Curs</td>
+            <td>Studenti inscrisi</td>
+            <td>
+                <a href="{% url 'create_subject' %}" class="btn btn-warning">Adauga</a>
+            </td>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for subject in subjects %}
+            <tr>
+                <td>{{subject.course_name}}</td>
+
+                {% if subject.get_students_count %}
+                    <td>{{subject.get_students}}</td>
+                {% else %}
+                    <td>Nu exista studenti inscrisi</td>
+                {% endif %}
+
+                <td>
+                    <a href="{% url 'update_subject' subject.id %}" class="btn btn-success"> Editeaza </a>
+                </td>
+
+                <td>
+                    <form action="{% url 'delete_subject' subject.id %}" method="post">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn btn-danger">
+                            Sterge
+                        </button>
+                    </form>
+                </td>
+
+            </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+
+    <h1>Lista studenti</h1>
+        <table class="table table-bordered">
+            
+            <thead class="thead-dark">
+            <tr>
+                <td>Numele studentului</td>
+                <td>Anul</td>
+                <td>
+                    <a href="{% url 'create_student' %}" class="btn btn-warning">
+                        Adauga
+                    </a>
+                </td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{student.full_name}}</td>
+                    <td>{{student.year}}</td>
+                    <td>
+                        <a href="{% url 'update_student' student.id %}" class="btn btn-success">
+                            Editeaza
+                        </a>
+
+                        <form action="{% url 'delete_student' student.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-danger">Sterge</button>
+                        </form>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+        </table>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %} 
+    <form action="" method="post" autocomplete="off">
+
+        {% csrf_token %}
+        {{form|crispy}}
+
+        <button type="submit" class="btn btn-dark">
+            Submit
+        </button>
+
+        <a href="{% url 'student_list' %}" class="btn btn-primary">
+            Inapoi
+        </a>
+
+    </form>
+    
+{% endblock %}

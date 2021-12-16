@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Lista de inscrieri</h1>
+    <table class="table table-responsive">
+
+        <thead>
+            <tr>
+                <td>Data</td>
+                <td>Nume student</td>
+                <td>Curs</td>
+                <td>Nota</td>
+                <td>
+                    <a href="{% url 'create_enrollment' %}" class="btn btn-warning">
+                        Adauga
+                    </a>
+                </td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for enrollment in enrollments %}
+                <tr>
+                    <td>{{enrollment.date_enrolled}}</td>
+                    <td>{{enrollment.student}}</td>
+                    <td>{{enrollment.subject}}</td>
+
+                    {% if enrollment.grades_list %}
+                        <td>{{enrollment.grades_list}}</td>
+                    {% else %}
+                        <td>Nicio nota</td>
+                    {% endif %}
+
+                    <td>
+
+                        <a href="{% url 'update_enrollment' enrollment.id %}" class="btn btn-success">Editeaza</a>
+                        <form action="{% url 'delete_enrollment' enrollment.id %}" method="post">
+                            
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Sterge</button>
+                        </form>
+
+                    </td>
+
+                    <td>
+                        
+                        <a href="{% url 'grade_enrollment' enrollment.id %}" class="btn btn-dark">Adauga nota</a>
+                       
+                        <form action="{% url 'delete_grade' enrollment.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-danger">Sterge nota</button>
+                        </form>
+                        
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+{% endblock %}
