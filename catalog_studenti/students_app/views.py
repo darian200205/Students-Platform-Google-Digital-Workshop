@@ -4,6 +4,7 @@ from .forms import StudentForm
 from .models import Subject, Student, CourseEnrollment
 from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm
 
+from django.core.paginator import EmptyPage, Paginator
 
 # Create your views here.
 
@@ -12,25 +13,43 @@ def student_list(request):
     students_list = Student.objects.all()
     # grades_list = Grade.objects.all()
 
+    p = Paginator(students_list, 6)
+    page_num = request.GET.get('page', 1)
+    try:
+        page = p.page(page_num)
+    except EmptyPage:
+        page = p.page(1)
+    
+    number_of_pages = p.num_pages
+
     return render(
         request,
         "student_list.html",
         {
-            "students": students_list,
+            "students": page,
+            "number_of_pages": number_of_pages
         }
     )
 
 
 def subject_list(request):
     subjects_list = Subject.objects.all()
+
+    p = Paginator(subjects_list, 20)
+    page_num = request.GET.get('page', 1)
+    try:
+        page = p.page(page_num)
+    except EmptyPage:
+        page = p.page(1)
     
+    number_of_pages = p.num_pages
 
     return render(
         request,
         "subject_list.html",
         {
-            "subjects": subjects_list,
-           
+            "subjects": page,
+            "number_of_pages": number_of_pages
         }
     )
 
@@ -38,11 +57,22 @@ def subject_list(request):
 def enrollment_list(request):
     enrollments_list = CourseEnrollment.objects.all()
 
+    p = Paginator(enrollments_list, 5)
+    page_num = request.GET.get('page', 1)
+
+    try:
+        page = p.page(page_num)
+    except EmptyPage:
+        page = p.page(1)
+
+    number_of_pages = p.num_pages
+
     return render(
         request,
         "enrollment_list.html",
         {
-            "enrollments": enrollments_list
+            "enrollments": page,
+            "number_of_pages": number_of_pages
         }
     )
 
@@ -184,6 +214,10 @@ def delete_grade(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = GradeForm()
 
+    #page_number = request.GET.get('page', 1)
+    #print("printing:-----", page_number)
+    page_number = 2
+
     if request.method == "POST":
         print(enrollment.grades_list)
         if enrollment.grades_list:
@@ -192,7 +226,7 @@ def delete_grade(request, pk):
         form = GradeForm(request.POST, instance=enrollment)
         if form.is_valid():
             form.save()
-            return redirect('/enrollment/list')
+            return redirect("/enrollment/list/")
     
     return render(request)
 

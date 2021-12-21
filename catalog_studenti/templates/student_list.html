@@ -38,4 +38,20 @@
         </tbody>
 
         </table>
+
+        <div class="container">
+            <div class="row">
+              <div class="col-sm">
+                Pagina {{students.number}} din {{number_of_pages}}
+                {% if students.has_previous %}
+                    <a href="{% url 'student_list' %}?page={{students.previous_page_number}}" class="btn btn-primary">Inapoi</a>
+                {% endif %}
+
+                {% if students.has_next %}
+                    <a href="{% url 'student_list' %}?page={{students.next_page_number}}" class="btn btn-primary">Urmatoarea</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
 {% endblock %}

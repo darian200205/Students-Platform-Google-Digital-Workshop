@@ -58,4 +58,22 @@
         </tbody>
 
     </table>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                Pagina {{enrollments.number}} din {{number_of_pages}}
+
+                {% if enrollments.has_previous %}
+                    <a href="{% url 'enrollment_list' %}?page={{enrollments.previous_page_number}}" class="btn btn-primary">Inapoi</a>
+                {% endif %}
+
+                {% if enrollments.has_next %}
+                    <a href="{% url 'enrollment_list' %}?page={{enrollments.next_page_number}}" class="btn btn-primary">Urmatoarea</a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
