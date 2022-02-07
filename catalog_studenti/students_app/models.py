@@ -42,7 +42,7 @@ class Subject(models.Model):
         return self.students.count()
     
     def get_students(self):
-        my_students =  self.students.all()
+        my_students = self.students.all()
         if self.get_students_count() > 4:
             my_students = my_students[:4]
             my_str = ', '.join([str(student) for student in my_students])
