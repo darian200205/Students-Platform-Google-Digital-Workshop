@@ -46,5 +46,5 @@ class GradeForm(forms.ModelForm):
 
 class CreateUserForm(UserCreationForm):
     class Meta:
-        model = Student
-        fields = ['email', 'full_name', 'year', 'password1', 'password2']
+        model = User
+        fields = ['email', 'password1', 'password2']

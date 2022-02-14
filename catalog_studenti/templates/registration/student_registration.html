@@ -6,11 +6,11 @@
     <div class="jumbotron jumbotron-fluid">
         <h1 class="display-4">Create your student account</h1>
         <div class="container-fluid">
-            <form method="POST" action="">
+            <form method="post" action="" autocomplete="off">
                 {% csrf_token %}
-                {% crispy form %}
-                <input class="btn btn-primary" type="submit" value="Submit">
-        </form>
+                {{form|crispy}}
+                <button type="submit" class="btn btn-primary">Inregistreaza-te</button>
+            </form>
         </div>
     </div>
 

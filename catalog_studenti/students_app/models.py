@@ -7,7 +7,7 @@ from django.contrib.auth.forms import User
 # Create your models here.
 
 
-class Student(User):
+class Student(models.Model):
     class Meta:
         db_table = "students"
 

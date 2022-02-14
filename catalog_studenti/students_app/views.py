@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from .forms import StudentForm
 from .models import Subject, Student, CourseEnrollment
@@ -91,19 +92,29 @@ def create_student(request):
 
 def register_student(request):
     form = CreateUserForm()
-
     if request.method == "POST":
         form = CreateUserForm(request.POST)
+        print("hi")
         if form.is_valid():
             form.save()
+            messages.success(request, 'Your student account was created successfully')
+            return redirect('login_student')
+        else:
+            print("error")
 
-    context = {'form': form}
+    context = {
+        'form': form
+    }
     return render(request, 'registration\student_registration.html', context)
 
 def login_student(request):
     context = {}
     return render(request, 'registration\student_login.html', context)
 
+def student_profile(request, pk):
+    student = Student.objects.get(id=pk)
+    context = {'student': student}
+    return render(request, 'student_profile.html', context)
 
 def create_subject(request):
     form = SubjectForm()
