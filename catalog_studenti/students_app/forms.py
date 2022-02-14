@@ -1,6 +1,10 @@
+from crispy_forms.bootstrap import StrictButton
+from crispy_forms.layout import Layout
 from django import forms
 from .models import Student, Subject, CourseEnrollment
-
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import User
+from crispy_forms.helper import FormHelper as helper
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -38,3 +42,9 @@ class GradeForm(forms.ModelForm):
         labels = {
             'grades': 'Nota'
         }
+
+
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        model = Student
+        fields = ['email', 'full_name', 'year', 'password1', 'password2']

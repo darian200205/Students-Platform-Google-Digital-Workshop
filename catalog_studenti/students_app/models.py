@@ -1,11 +1,13 @@
 from django.db import models
 from django.core.validators import int_list_validator, validate_comma_separated_integer_list
 from django.db.models.fields.related import ManyToManyField
+from django.contrib.auth.forms import User
+
 
 # Create your models here.
 
 
-class Student(models.Model):
+class Student(User):
     class Meta:
         db_table = "students"
 
@@ -25,7 +27,7 @@ class Student(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.full_name
+        return str(self.full_name)
 
 
 class Subject(models.Model):
@@ -37,10 +39,10 @@ class Subject(models.Model):
 
     def __str__(self):
         return self.course_name
-    
+
     def get_students_count(self):
         return self.students.count()
-    
+
     def get_students(self):
         my_students = self.students.all()
         if self.get_students_count() > 4:
@@ -50,7 +52,6 @@ class Subject(models.Model):
         else:
             my_str = ', '.join([str(student) for student in my_students])
         return my_str
-    
 
 
 class CourseEnrollment(models.Model):
@@ -91,20 +92,6 @@ class CourseEnrollment(models.Model):
 
     class Meta:
         unique_together = [['student', 'subject']]
-    
+
     def __str__(self):
-        return f'Student {self.student} enrolled at {self.subject}' 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return f'Student {self.student} enrolled at {self.subject}'

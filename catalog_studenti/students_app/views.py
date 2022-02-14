@@ -2,24 +2,23 @@ from django.shortcuts import render, redirect
 
 from .forms import StudentForm
 from .models import Subject, Student, CourseEnrollment
-from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm
+from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm, CreateUserForm
 
 from django.core.paginator import EmptyPage, Paginator
-
-# Create your views here.
+from django.contrib.auth.forms import UserCreationForm
 
 
 def student_list(request):
     students_list = Student.objects.all()
-    # grades_list = Grade.objects.all()
 
+    # grades_list = Grade.objects.all()
     p = Paginator(students_list, 6)
     page_num = request.GET.get('page', 1)
     try:
         page = p.page(page_num)
     except EmptyPage:
         page = p.page(1)
-    
+
     number_of_pages = p.num_pages
 
     return render(
@@ -41,7 +40,7 @@ def subject_list(request):
         page = p.page(page_num)
     except EmptyPage:
         page = p.page(1)
-    
+
     number_of_pages = p.num_pages
 
     return render(
@@ -90,6 +89,22 @@ def create_student(request):
     return render(request, 'student_form.html', context)
 
 
+def register_student(request):
+    form = CreateUserForm()
+
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+    context = {'form': form}
+    return render(request, 'registration\student_registration.html', context)
+
+def login_student(request):
+    context = {}
+    return render(request, 'registration\student_login.html', context)
+
+
 def create_subject(request):
     form = SubjectForm()
 
@@ -119,7 +134,7 @@ def create_enrollment(request):
 
 def update_student(request, pk):
     student = Student.objects.get(id=pk)
-    form = StudentForm(instance=student)  #  uplem formul cu datele studentului
+    form = StudentForm(instance=student)  # uplem formul cu datele studentului
 
     if request.method == "POST":
         form = StudentForm(request.POST, instance=student)
@@ -140,7 +155,7 @@ def update_subject(request, pk):
         if form.is_valid():
             form.save()
             return redirect('/subject/list')
-    
+
     context = {'form': form}
     return render(request, 'subject_form.html', context)
 
@@ -154,7 +169,7 @@ def update_enrollment(request, pk):
         if form.is_valid():
             form.save()
             return redirect('/enrollment/list')
-    
+
     context = {'form': form}
     return render(request, 'enrollment_form.html', context)
 
@@ -175,7 +190,7 @@ def delete_subject(request, pk):
     if request.method == "POST":
         subject.delete()
         return redirect('/subject/list')
-    
+
     return render(request)
 
 
@@ -185,7 +200,7 @@ def delete_enrollment(request, pk):
     if request.method == "POST":
         enrollment.delete()
         return redirect('/enrollment/list')
-    
+
     return render(request)
 
 
@@ -201,11 +216,11 @@ def grade_enrollment(request, pk):
 
         else:
             enrollment.grades_list = request.POST['grades']
-            
+
         form = GradeForm(request.POST, instance=enrollment)
         if form.is_valid():
             form.save()
-    
+
     context = {'form': form}
     return render(request, 'grade_form.html', context)
 
@@ -214,8 +229,8 @@ def delete_grade(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = GradeForm()
 
-    #page_number = request.GET.get('page', 1)
-    #print("printing:-----", page_number)
+    # page_number = request.GET.get('page', 1)
+    # print("printing:-----", page_number)
     page_number = 2
 
     if request.method == "POST":
@@ -227,6 +242,5 @@ def delete_grade(request, pk):
         if form.is_valid():
             form.save()
             return redirect("/enrollment/list/")
-    
-    return render(request)
 
+    return render(request)
