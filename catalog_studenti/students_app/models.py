@@ -4,9 +4,6 @@ from django.db.models.fields.related import ManyToManyField
 from django.contrib.auth.forms import User
 
 
-# Create your models here.
-
-
 class Student(models.Model):
     class Meta:
         db_table = "students"
@@ -25,6 +22,8 @@ class Student(models.Model):
         blank=False,
         null=False
     )
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self) -> str:
         return str(self.full_name)

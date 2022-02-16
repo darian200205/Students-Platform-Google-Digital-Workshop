@@ -7,6 +7,7 @@ from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm, CreateUs
 
 from django.core.paginator import EmptyPage, Paginator
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import User
 
 
 def student_list(request):
@@ -92,29 +93,37 @@ def create_student(request):
 
 def register_student(request):
     form = CreateUserForm()
+    student_form = StudentForm()
     if request.method == "POST":
         form = CreateUserForm(request.POST)
-        print("hi")
-        if form.is_valid():
-            form.save()
+        student_form = StudentForm(request.POST)
+        if form.is_valid() and student_form.is_valid():
+            form.instance.username = request.POST['email']
+            new_user = form.save()
+            student = student_form.save(commit=False)
+            if student.user_id is None:
+                student.user_id = new_user.id
+            student.save()
             messages.success(request, 'Your student account was created successfully')
-            return redirect('login_student')
-        else:
-            print("error")
+            return redirect('/student/list')
 
     context = {
-        'form': form
+        'form': form,
+        'student_form': student_form
     }
     return render(request, 'registration\student_registration.html', context)
+
 
 def login_student(request):
     context = {}
     return render(request, 'registration\student_login.html', context)
 
+
 def student_profile(request, pk):
     student = Student.objects.get(id=pk)
     context = {'student': student}
     return render(request, 'student_profile.html', context)
+
 
 def create_subject(request):
     form = SubjectForm()

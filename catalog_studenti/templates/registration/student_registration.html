@@ -9,6 +9,7 @@
             <form method="post" action="" autocomplete="off">
                 {% csrf_token %}
                 {{form|crispy}}
+                {{student_form|crispy}}
                 <button type="submit" class="btn btn-primary">Inregistreaza-te</button>
             </form>
         </div>

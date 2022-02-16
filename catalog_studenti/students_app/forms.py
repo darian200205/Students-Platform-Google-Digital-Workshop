@@ -4,12 +4,12 @@ from django import forms
 from .models import Student, Subject, CourseEnrollment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import User
-from crispy_forms.helper import FormHelper as helper
+
 
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = '__all__'
+        fields = ['full_name', 'year']
         labels = {
             'full_name': 'Nume de familie si prenume',
             'year': 'Anul'
@@ -48,3 +48,6 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['email', 'password1', 'password2']
+
+    def clean_username(self, form):
+        pass
