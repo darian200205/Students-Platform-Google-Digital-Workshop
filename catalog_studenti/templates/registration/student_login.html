@@ -1,5 +1,17 @@
 {% extends 'registration\base_registration.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-    <h1>Login</h1>
+
+    <div class="jumbotron jumbotron-fluid">
+        <h1 class="display-4">Login into your student account</h1>
+        <div class="container-fluid">
+            <form method="post" action="" autocomplete="off">
+                {% csrf_token %}
+                {{login_form|crispy}}
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
 {% endblock %}

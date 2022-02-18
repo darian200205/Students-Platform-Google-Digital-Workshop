@@ -3,11 +3,13 @@ from django.contrib import messages
 
 from .forms import StudentForm
 from .models import Subject, Student, CourseEnrollment
-from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm, CreateUserForm
+from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm, CreateUserForm, LoginUserForm
 
 from django.core.paginator import EmptyPage, Paginator
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import User
+from django.contrib.auth import authenticate, login, logout
 
 
 def student_list(request):
@@ -104,7 +106,7 @@ def register_student(request):
             if student.user_id is None:
                 student.user_id = new_user.id
             student.save()
-            messages.success(request, 'Your student account was created successfully')
+            # messages.success(request, 'Your student account was created successfully')
             return redirect('/student/list')
 
     context = {
@@ -115,7 +117,17 @@ def register_student(request):
 
 
 def login_student(request):
-    context = {}
+    login_form = LoginUserForm()
+    if request.method == 'POST':
+        email = request.POST.get('username')
+        password = request.POST['password']
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('/student/list')
+
+    context = {'login_form': login_form}
     return render(request, 'registration\student_login.html', context)
 
 

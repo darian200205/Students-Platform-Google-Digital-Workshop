@@ -1,7 +1,9 @@
 from django.db import models
+from django.conf import settings
 from django.core.validators import int_list_validator, validate_comma_separated_integer_list
 from django.db.models.fields.related import ManyToManyField
 from django.contrib.auth.forms import User
+from django.contrib.auth.backends import ModelBackend, BaseBackend
 
 
 class Student(models.Model):
@@ -94,3 +96,5 @@ class CourseEnrollment(models.Model):
 
     def __str__(self):
         return f'Student {self.student} enrolled at {self.subject}'
+
+

@@ -3,7 +3,8 @@ from crispy_forms.layout import Layout
 from django import forms
 from .models import Student, Subject, CourseEnrollment
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import User
+from django.contrib.auth.forms import UserModel, User
+from django.contrib.auth.forms import AuthenticationForm
 
 
 class StudentForm(forms.ModelForm):
@@ -49,5 +50,12 @@ class CreateUserForm(UserCreationForm):
         model = User
         fields = ['email', 'password1', 'password2']
 
-    def clean_username(self, form):
-        pass
+
+class LoginUserForm(AuthenticationForm):
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+
+        labels = {
+            'email': 'Email'
+        }
