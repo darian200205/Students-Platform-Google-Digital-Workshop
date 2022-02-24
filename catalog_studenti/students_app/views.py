@@ -125,15 +125,28 @@ def login_student(request):
 
         if user is not None:
             login(request, user)
-            return redirect('/student/list')
+            return redirect('/student/profile')
+        else:
+            messages.info(request, "Username or password incorrect", )
+            return redirect('/student/login')
 
     context = {'login_form': login_form}
     return render(request, 'registration\student_login.html', context)
 
 
-def student_profile(request, pk):
-    student = Student.objects.get(id=pk)
-    context = {'student': student}
+def logout_student(request):
+    logout(request)
+    return redirect('/student/login')
+
+
+def student_profile(request):
+    student = request.user.student
+    courses = student.subject_set.all()
+    
+    context = {
+        'student': student,
+        'courses': courses
+    }
     return render(request, 'student_profile.html', context)
 
 
