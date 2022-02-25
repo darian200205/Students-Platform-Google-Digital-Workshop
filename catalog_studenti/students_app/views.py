@@ -106,13 +106,16 @@ def register_student(request):
             if student.user_id is None:
                 student.user_id = new_user.id
             student.save()
+
+            login(request, new_user)
             # messages.success(request, 'Your student account was created successfully')
-            return redirect('/student/list')
+            return redirect('/student/profile')
 
     context = {
         'form': form,
         'student_form': student_form
     }
+
     return render(request, 'registration\student_registration.html', context)
 
 
@@ -126,6 +129,7 @@ def login_student(request):
         if user is not None:
             login(request, user)
             return redirect('/student/profile')
+
         else:
             messages.info(request, "Username or password incorrect", )
             return redirect('/student/login')
@@ -142,7 +146,7 @@ def logout_student(request):
 def student_profile(request):
     student = request.user.student
     courses = student.subject_set.all()
-    
+
     context = {
         'student': student,
         'courses': courses
