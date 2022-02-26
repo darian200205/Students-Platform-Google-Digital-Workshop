@@ -101,15 +101,17 @@ def register_student(request):
         student_form = StudentForm(request.POST)
         if form.is_valid() and student_form.is_valid():
             form.instance.username = request.POST['email']
+
             new_user = form.save()
             student = student_form.save(commit=False)
+
             if student.user_id is None:
                 student.user_id = new_user.id
-            student.save()
 
+            student.save()
             login(request, new_user)
-            # messages.success(request, 'Your student account was created successfully')
             return redirect('/student/profile')
+            # messages.success(request, 'Your student account was created successfully')
 
     context = {
         'form': form,
@@ -146,10 +148,12 @@ def logout_student(request):
 def student_profile(request):
     student = request.user.student
     courses = student.subject_set.all()
+    number_of_courses = student.subject_set.count()
 
     context = {
         'student': student,
-        'courses': courses
+        'courses': courses,
+        'number_of_courses': number_of_courses
     }
     return render(request, 'student_profile.html', context)
 

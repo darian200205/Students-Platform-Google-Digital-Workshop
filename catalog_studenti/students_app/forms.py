@@ -2,6 +2,7 @@ from crispy_forms.bootstrap import StrictButton
 from crispy_forms.layout import Layout
 from django import forms
 from .models import Student, Subject, CourseEnrollment
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import UserModel, User
 from django.contrib.auth.forms import AuthenticationForm
@@ -49,6 +50,12 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['email', 'password1', 'password2']
+
+    def clean_email(self):
+        cleaned_email = self.cleaned_data['email']
+        if User.objects.get(email=cleaned_email) is not None:
+            raise forms.ValidationError("There is already an account with the entered email!")
+        return cleaned_email
 
 
 class LoginUserForm(AuthenticationForm):

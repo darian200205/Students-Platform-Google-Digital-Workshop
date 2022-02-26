@@ -9,20 +9,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
-<body>
+<body class="bg-dark">
 
-  <nav class="navbar navbar-light bg-light justify-content-between">
-    <a class="navbar-brand">Home</a>
-    <form class="form-inline">
-      <a href="{% url 'student_logout' %}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</a>
-    </form>
+  <nav class="navbar navbar-light bg-light">
+      <a class="navbar-brand">Home</a>
+
+      <form class="d-flex">
+          <a href="{% url 'subject_list' %}" class="btn btn-primary mr-sm-1"> Courses </a>
+          <a href="{% url 'student_logout' %}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</a>
+      </form>
+
   </nav>
-  <h1>Welcome, {{student}} </h1>
-  <ul>
-      {% for course in courses %}
-        <li> {{course}} </li>
-      {% endfor %}
-  </ul>
+
+<div class="jumbotron jumbotron-fluid text-light">
+    <h1 class="display-4"> Welcome, {{student}} </h1>
+
+    <div class="container-fluid">
+        {% if number_of_courses %}
+      <ul>
+          {% for course in courses %}
+            <li> {{course}} </li>
+          {% endfor %}
+      </ul>
+        {% else %}
+            <h2 class="text-center"> You haven't enrolled in any courses </h2>
+        {% endif %}
+    </div>
+
+</div>
+
+
 
 
 
