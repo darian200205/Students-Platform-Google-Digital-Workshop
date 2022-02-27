@@ -11,7 +11,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import User
 from django.contrib.auth import authenticate, login, logout
 
+from django.contrib.auth.decorators import login_required
+from .decorators import unauthenticated_user, allowed_users
 
+
+@login_required(login_url='/student/login')
+@allowed_users(allowed_roles=['admin'])
 def student_list(request):
     students_list = Student.objects.all()
 
@@ -93,6 +98,7 @@ def create_student(request):
     return render(request, 'student_form.html', context)
 
 
+@unauthenticated_user
 def register_student(request):
     form = CreateUserForm()
     student_form = StudentForm()
@@ -112,7 +118,6 @@ def register_student(request):
             login(request, new_user)
             return redirect('/student/profile')
             # messages.success(request, 'Your student account was created successfully')
-
     context = {
         'form': form,
         'student_form': student_form
@@ -121,6 +126,7 @@ def register_student(request):
     return render(request, 'registration\student_registration.html', context)
 
 
+@unauthenticated_user
 def login_student(request):
     login_form = LoginUserForm()
     if request.method == 'POST':
@@ -145,17 +151,22 @@ def logout_student(request):
     return redirect('/student/login')
 
 
+@login_required(login_url='/student/login')
 def student_profile(request):
-    student = request.user.student
-    courses = student.subject_set.all()
-    number_of_courses = student.subject_set.count()
+    if request.user.is_authenticated:
+        student = request.user.student
+        courses = student.subject_set.all()
+        number_of_courses = student.subject_set.count()
 
-    context = {
-        'student': student,
-        'courses': courses,
-        'number_of_courses': number_of_courses
-    }
-    return render(request, 'student_profile.html', context)
+        context = {
+            'student': student,
+            'courses': courses,
+            'number_of_courses': number_of_courses
+        }
+        return render(request, 'student_profile.html', context)
+
+    else:
+        return redirect('/student/login')
 
 
 def create_subject(request):
