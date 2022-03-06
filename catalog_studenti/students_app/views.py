@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import HttpResponse
 
 from .forms import StudentForm
 from .models import Subject, Student, CourseEnrollment
@@ -13,6 +14,10 @@ from django.contrib.auth import authenticate, login, logout
 
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users
+
+
+def home(request):
+    return redirect('/student/register')
 
 
 @login_required(login_url='/student/login')
@@ -40,6 +45,7 @@ def student_list(request):
     )
 
 
+@allowed_users(allowed_roles=['admin'])
 def subject_list(request):
     subjects_list = Subject.objects.all()
 
@@ -62,6 +68,7 @@ def subject_list(request):
     )
 
 
+@allowed_users(allowed_roles=['admin'])
 def enrollment_list(request):
     enrollments_list = CourseEnrollment.objects.all()
 
@@ -85,6 +92,7 @@ def enrollment_list(request):
     )
 
 
+@allowed_users(allowed_roles=['admin'])
 def create_student(request):
     form = StudentForm()
 
@@ -107,8 +115,8 @@ def register_student(request):
         student_form = StudentForm(request.POST)
         if form.is_valid() and student_form.is_valid():
             form.instance.username = request.POST['email']
-
             new_user = form.save()
+
             student = student_form.save(commit=False)
 
             if student.user_id is None:
@@ -169,6 +177,7 @@ def student_profile(request):
         return redirect('/student/login')
 
 
+@allowed_users(allowed_roles=['admin'])
 def create_subject(request):
     form = SubjectForm()
 
@@ -182,6 +191,7 @@ def create_subject(request):
     return render(request, 'subject_form.html', context)
 
 
+@allowed_users(allowed_roles=['admin'])
 def create_enrollment(request):
     form = EnrollmentForm()
 
@@ -196,6 +206,7 @@ def create_enrollment(request):
     })
 
 
+@allowed_users(allowed_roles=['admin'])
 def update_student(request, pk):
     student = Student.objects.get(id=pk)
     form = StudentForm(instance=student)  # uplem formul cu datele studentului
@@ -210,6 +221,7 @@ def update_student(request, pk):
     return render(request, 'student_form.html', context)
 
 
+@allowed_users(allowed_roles=['admin'])
 def update_subject(request, pk):
     subject = Subject.objects.get(id=pk)
     form = SubjectForm(instance=subject)
@@ -224,6 +236,7 @@ def update_subject(request, pk):
     return render(request, 'subject_form.html', context)
 
 
+@allowed_users(allowed_roles=['admin'])
 def update_enrollment(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = EnrollmentForm(instance=enrollment)
@@ -238,6 +251,7 @@ def update_enrollment(request, pk):
     return render(request, 'enrollment_form.html', context)
 
 
+@allowed_users(allowed_roles=['admin'])
 def delete_student(request, pk):
     student = Student.objects.get(id=pk)
 
@@ -248,6 +262,7 @@ def delete_student(request, pk):
     return render(request, '/student/list')
 
 
+@allowed_users(allowed_roles=['admin'])
 def delete_subject(request, pk):
     subject = Subject.objects.get(id=pk)
 
@@ -258,6 +273,7 @@ def delete_subject(request, pk):
     return render(request)
 
 
+@allowed_users(allowed_roles=['admin'])
 def delete_enrollment(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
 
@@ -268,6 +284,7 @@ def delete_enrollment(request, pk):
     return render(request)
 
 
+@allowed_users(allowed_roles=['admin'])
 def grade_enrollment(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = GradeForm()
@@ -289,6 +306,7 @@ def grade_enrollment(request, pk):
     return render(request, 'grade_form.html', context)
 
 
+@allowed_users(allowed_roles=['admin'])
 def delete_grade(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = GradeForm()

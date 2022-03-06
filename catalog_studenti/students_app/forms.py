@@ -6,7 +6,7 @@ from .models import Student, Subject, CourseEnrollment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import UserModel, User
 from django.contrib.auth.forms import AuthenticationForm
-
+from django.core.exceptions import ObjectDoesNotExist
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -53,8 +53,17 @@ class CreateUserForm(UserCreationForm):
 
     def clean_email(self):
         cleaned_email = self.cleaned_data['email']
-        if User.objects.get(email=cleaned_email) is not None:
-            raise forms.ValidationError("There is already an account with the entered email!")
+
+        try:
+            if User.objects.get(email=cleaned_email) is not None:
+                raise forms.ValidationError("There is already an account with the entered email!")
+        except User.DoesNotExist:
+            pass
+        return cleaned_email
+
+
+
+
         return cleaned_email
 
 
