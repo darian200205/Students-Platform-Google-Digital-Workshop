@@ -11,25 +11,35 @@
 <body>
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">Catalog</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'student_list' %}">Lista studenti</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'subject_list' %}">Lista cursuri</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'enrollment_list' %}">Inscrieri</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+          <div class="container-fluid">
+                <a class="navbar-brand" href="#">Catalog</a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                      <ul class="navbar-nav">
+                            <li class="nav-item">
+                              <a class="nav-link active" aria-current="page" href="{% url 'student_list' %}">Lista studenti</a>
+                            </li>
+
+                            <li class="nav-item">
+                              <a class="nav-link" href="{% url 'subject_list' %}">Lista cursuri</a>
+                            </li>
+
+                            <li class="nav-item">
+                              <a class="nav-link" href="{% url 'enrollment_list' %}">Inscrieri</a>
+                            </li>
+
+                      </ul>
+                </div>
+
+              <form class="d-flex">
+                    <a href="{% url 'student_logout' %}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</a>
+              </form>
+
+          </div>
     </nav>
 
     

@@ -1,7 +1,7 @@
 from crispy_forms.bootstrap import StrictButton
 from crispy_forms.layout import Layout
 from django import forms
-from .models import Student, Subject, CourseEnrollment
+from .models import Student, Subject, CourseEnrollment, Settings
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import UserModel, User
@@ -62,9 +62,13 @@ class CreateUserForm(UserCreationForm):
         return cleaned_email
 
 
-
-
-        return cleaned_email
+class SettingsForm(forms.ModelForm):
+    class Meta:
+        model = Settings
+        fields = '__all__'
+        labels = {
+            'is_teacher': 'I am a teacher'
+        }
 
 
 class LoginUserForm(AuthenticationForm):

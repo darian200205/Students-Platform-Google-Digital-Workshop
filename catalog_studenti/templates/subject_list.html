@@ -47,22 +47,6 @@
 
 </table>
 
-<div class="container">
-    <div class="row">
-        <div class="col-sm">
-            
-            Pagina {{subjects.number}} din {{number_of_pages}}
 
-            {% if subjects.has_previous %}
-                <a href="{% url 'subject_list' %}?page={{subjects.previous_page_number}}" class="btn btn-primary">Inapoi</a>
-            {% endif %}
-
-            {% if subjects.has_next %}
-                <a href="{% url 'subject_list' %}?page={{subjects.next_page_number}}" class="btn btn-primary">Urmatoare</a>     
-            {% endif %}
-
-        </div>
-    </div>
-</div>
 
 {% endblock %}

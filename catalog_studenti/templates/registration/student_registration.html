@@ -10,6 +10,7 @@
                 {% csrf_token %}
                 {{form|crispy}}
                 {{student_form|crispy}}
+                {{is_teacher_form|crispy}}
                 <button type="submit" class="btn btn-primary">Inregistreaza-te</button>
             </form>
         </div>

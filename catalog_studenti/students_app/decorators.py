@@ -1,10 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect
-
+from .models import Student
+from django.contrib.auth import authenticate, login, logout
 
 def unauthenticated_user(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.student:
+        if request.user.is_authenticated and Student.objects.filter(user=request.user) is not None:
             return redirect('/student/profile')
         else:
             return view_func(request, *args, **kwargs)
@@ -22,7 +23,10 @@ def allowed_users(allowed_roles = []):
             if group in allowed_roles:
                 return view_function(request, *args, **kwargs)
             else:
-                return HttpResponse("You are not a teacher.")
+                if group == 'teachers':
+                    return HttpResponse("You are not a student")
+                else:
+                    return HttpResponse("You are not a teacher")
 
         return wrapper
     return decorator

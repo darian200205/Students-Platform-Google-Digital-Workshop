@@ -4,7 +4,8 @@ from django.http import HttpResponse
 
 from .forms import StudentForm
 from .models import Subject, Student, CourseEnrollment
-from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm, CreateUserForm, LoginUserForm
+from .forms import StudentForm, SubjectForm, EnrollmentForm, GradeForm, CreateUserForm, LoginUserForm, SettingsForm
+from django.contrib.auth.models import Group
 
 from django.core.paginator import EmptyPage, Paginator
 
@@ -21,31 +22,21 @@ def home(request):
 
 
 @login_required(login_url='/student/login')
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def student_list(request):
     students_list = Student.objects.all()
 
-    # grades_list = Grade.objects.all()
-    p = Paginator(students_list, 6)
-    page_num = request.GET.get('page', 1)
-    try:
-        page = p.page(page_num)
-    except EmptyPage:
-        page = p.page(1)
-
-    number_of_pages = p.num_pages
 
     return render(
         request,
         "student_list.html",
         {
-            "students": page,
-            "number_of_pages": number_of_pages
+            "students": students_list
         }
     )
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def subject_list(request):
     subjects_list = Subject.objects.all()
 
@@ -68,7 +59,7 @@ def subject_list(request):
     )
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def enrollment_list(request):
     enrollments_list = CourseEnrollment.objects.all()
 
@@ -92,7 +83,7 @@ def enrollment_list(request):
     )
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def create_student(request):
     form = StudentForm()
 
@@ -110,11 +101,17 @@ def create_student(request):
 def register_student(request):
     form = CreateUserForm()
     student_form = StudentForm()
+    is_teacher_form = SettingsForm()
+
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         student_form = StudentForm(request.POST)
+        is_teacher_form = SettingsForm(request.POST)
+
         if form.is_valid() and student_form.is_valid():
             form.instance.username = request.POST['email']
+            answer = is_teacher_form.save()
+
             new_user = form.save()
 
             student = student_form.save(commit=False)
@@ -123,12 +120,23 @@ def register_student(request):
                 student.user_id = new_user.id
 
             student.save()
+
             login(request, new_user)
+
+            if answer.is_teacher:
+                new_user.is_staff = True
+                group = Group.objects.get(name='teachers')
+                group.user_set.add(new_user)
+                return redirect('/student/list')
+
+            group = Group.objects.get(name='students')
+            group.user_set.add(new_user)
             return redirect('/student/profile')
             # messages.success(request, 'Your student account was created successfully')
     context = {
         'form': form,
-        'student_form': student_form
+        'student_form': student_form,
+        'is_teacher_form': is_teacher_form
     }
 
     return render(request, 'registration\student_registration.html', context)
@@ -143,8 +151,16 @@ def login_student(request):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
+            group = None
+            if user.groups.exists():
+                group = user.groups.all()[0]
+
             login(request, user)
-            return redirect('/student/profile')
+
+            if group == 'students':
+                return redirect('/student/profile')
+            else:
+                return redirect('/student/list')
 
         else:
             messages.info(request, "Username or password incorrect", )
@@ -160,6 +176,7 @@ def logout_student(request):
 
 
 @login_required(login_url='/student/login')
+@allowed_users(allowed_roles=['students'])
 def student_profile(request):
     if request.user.is_authenticated:
         student = request.user.student
@@ -177,7 +194,7 @@ def student_profile(request):
         return redirect('/student/login')
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def create_subject(request):
     form = SubjectForm()
 
@@ -191,7 +208,7 @@ def create_subject(request):
     return render(request, 'subject_form.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def create_enrollment(request):
     form = EnrollmentForm()
 
@@ -206,7 +223,7 @@ def create_enrollment(request):
     })
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def update_student(request, pk):
     student = Student.objects.get(id=pk)
     form = StudentForm(instance=student)  # uplem formul cu datele studentului
@@ -221,7 +238,7 @@ def update_student(request, pk):
     return render(request, 'student_form.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def update_subject(request, pk):
     subject = Subject.objects.get(id=pk)
     form = SubjectForm(instance=subject)
@@ -236,7 +253,7 @@ def update_subject(request, pk):
     return render(request, 'subject_form.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def update_enrollment(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = EnrollmentForm(instance=enrollment)
@@ -251,7 +268,7 @@ def update_enrollment(request, pk):
     return render(request, 'enrollment_form.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def delete_student(request, pk):
     student = Student.objects.get(id=pk)
 
@@ -262,7 +279,7 @@ def delete_student(request, pk):
     return render(request, '/student/list')
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def delete_subject(request, pk):
     subject = Subject.objects.get(id=pk)
 
@@ -273,7 +290,7 @@ def delete_subject(request, pk):
     return render(request)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def delete_enrollment(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
 
@@ -284,7 +301,7 @@ def delete_enrollment(request, pk):
     return render(request)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def grade_enrollment(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = GradeForm()
@@ -306,7 +323,7 @@ def grade_enrollment(request, pk):
     return render(request, 'grade_form.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['teachers'])
 def delete_grade(request, pk):
     enrollment = CourseEnrollment.objects.get(id=pk)
     form = GradeForm()

@@ -13,7 +13,8 @@ class Student(models.Model):
     YEAR_CHOICES = (
         ("1", "YEAR 1"),
         ("2", "YEAR 2"),
-        ("3", "YEAR 3")
+        ("3", "YEAR 3"),
+        ("0", "TEACHER")
     )
 
     full_name = models.CharField(max_length=30, blank=False, null=False)
@@ -97,4 +98,5 @@ class CourseEnrollment(models.Model):
     def __str__(self):
         return f'Student {self.student} enrolled at {self.subject}'
 
-
+class Settings(models.Model):
+     is_teacher = models.BooleanField()

@@ -19,21 +19,23 @@
 
         <tbody>
             {% for student in students %}
-                <tr>
-                    <td>{{student.full_name}}</td>
-                    <td>{{student.year}}</td>
-                    <td>
-                        <a href="{% url 'update_student' student.id %}" class="btn btn-success">
-                            Editeaza
-                        </a>
+                {% if student.year != "0" %}
+                        <tr>
+                            <td>{{student.full_name}}</td>
+                            <td>{{student.year}}</td>
+                            <td>
+                                <a href="{% url 'update_student' student.id %}" class="btn btn-success">
+                                    Editeaza
+                                </a>
 
-                        <form action="{% url 'delete_student' student.id %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-danger">Sterge</button>
-                        </form>
+                                <form action="{% url 'delete_student' student.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-danger">Sterge</button>
+                                </form>
 
-                    </td>
-                </tr>
+                            </td>
+                        </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
 
