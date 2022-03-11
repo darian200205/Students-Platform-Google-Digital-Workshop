@@ -50,7 +50,7 @@ class Subject(models.Model):
         if self.get_students_count() > 4:
             my_students = my_students[:4]
             my_str = ', '.join([str(student) for student in my_students])
-            my_str += f" si inca {self.students.count() - 4}"
+            my_str += f" and {self.students.count() - 4} more"
         else:
             my_str = ', '.join([str(student) for student in my_students])
         return my_str
@@ -98,5 +98,6 @@ class CourseEnrollment(models.Model):
     def __str__(self):
         return f'Student {self.student} enrolled at {self.subject}'
 
+
 class Settings(models.Model):
-     is_teacher = models.BooleanField()
+    is_teacher = models.BooleanField()

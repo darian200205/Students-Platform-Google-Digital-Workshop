@@ -26,7 +26,6 @@ def home(request):
 def student_list(request):
     students_list = Student.objects.all()
 
-
     return render(
         request,
         "student_list.html",
@@ -36,25 +35,21 @@ def student_list(request):
     )
 
 
-@allowed_users(allowed_roles=['teachers'])
+@allowed_users(allowed_roles=['teachers', 'students'])
 def subject_list(request):
-    subjects_list = Subject.objects.all()
-
-    p = Paginator(subjects_list, 20)
-    page_num = request.GET.get('page', 1)
-    try:
-        page = p.page(page_num)
-    except EmptyPage:
-        page = p.page(1)
-
-    number_of_pages = p.num_pages
+    group = None
+    group = request.user.groups.all()[0].name
+    student_courses = None
+    subjects = Subject.objects.all()
+    if group == 'students':
+        student_courses = request.user.student.subject_set.all()
 
     return render(
         request,
         "subject_list.html",
         {
-            "subjects": page,
-            "number_of_pages": number_of_pages
+            "subjects": subjects,
+            "student_courses": student_courses
         }
     )
 
@@ -153,7 +148,7 @@ def login_student(request):
         if user is not None:
             group = None
             if user.groups.exists():
-                group = user.groups.all()[0]
+                group = user.groups.all()[0].name
 
             login(request, user)
 
@@ -178,20 +173,18 @@ def logout_student(request):
 @login_required(login_url='/student/login')
 @allowed_users(allowed_roles=['students'])
 def student_profile(request):
-    if request.user.is_authenticated:
-        student = request.user.student
-        courses = student.subject_set.all()
-        number_of_courses = student.subject_set.count()
+    student = request.user.student
+    courses = student.subject_set.all()
+    number_of_courses = student.subject_set.count()
 
-        context = {
-            'student': student,
-            'courses': courses,
-            'number_of_courses': number_of_courses
-        }
-        return render(request, 'student_profile.html', context)
+    context = {
+        'student': student,
+        'courses': courses,
+        'number_of_courses': number_of_courses
+    }
+    return render(request, 'student_profile.html', context)
 
-    else:
-        return redirect('/student/login')
+    return redirect('/student/login')
 
 
 @allowed_users(allowed_roles=['teachers'])
@@ -211,7 +204,6 @@ def create_subject(request):
 @allowed_users(allowed_roles=['teachers'])
 def create_enrollment(request):
     form = EnrollmentForm()
-
     if request.method == "POST":
         enrollment = EnrollmentForm(request.POST)
         if enrollment.is_valid():
@@ -221,6 +213,19 @@ def create_enrollment(request):
     return render(request, 'enrollment_form.html', context={
         'form': form
     })
+
+
+def enroll_student(request, pk):
+    course = Subject.objects.get(id=pk)
+    context = {
+        'student': request.user.student,
+        'subject': course
+    }
+    enrollment = EnrollmentForm(context)
+    if enrollment.is_valid():
+        enrollment.save()
+        return redirect('/subject/list')
+    return render(request, 'subject_list.html')
 
 
 @allowed_users(allowed_roles=['teachers'])
