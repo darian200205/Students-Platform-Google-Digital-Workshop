@@ -6,6 +6,7 @@
     <form action="" method="post" autocomplete="off">
 
         {% csrf_token %}
+        {{user_form|crispy}}
         {{form|crispy}}
 
         <button type="submit" class="btn btn-dark">
@@ -13,7 +14,7 @@
         </button>
 
         <a href="{% url 'student_list' %}" class="btn btn-primary">
-            Inapoi
+            Go back
         </a>
 
     </form>

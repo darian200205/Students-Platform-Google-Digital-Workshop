@@ -8,13 +8,14 @@ from django.contrib.auth.forms import UserModel, User
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ObjectDoesNotExist
 
+
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = ['full_name', 'year']
         labels = {
-            'full_name': 'Nume de familie si prenume',
-            'year': 'Anul'
+            'full_name': 'Surname and first name',
+            'year': 'Year'
         }
 
 
@@ -23,7 +24,7 @@ class SubjectForm(forms.ModelForm):
         model = Subject
         fields = ['course_name']
         labels = {
-            'course_name': 'Numele cursului',
+            'course_name': 'Course name',
         }
 
 
@@ -32,8 +33,8 @@ class EnrollmentForm(forms.ModelForm):
         model = CourseEnrollment
         fields = ['student', 'subject']
         labels = {
-            'student': 'Studentul',
-            'subject': 'Cursul',
+            'student': 'Student',
+            'subject': 'Course',
         }
 
 
@@ -42,7 +43,7 @@ class GradeForm(forms.ModelForm):
         model = CourseEnrollment
         fields = ['grades']
         labels = {
-            'grades': 'Nota'
+            'grades': 'Grade'
         }
 
 

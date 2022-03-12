@@ -25,16 +25,36 @@
     <h1 class="display-4"> Welcome, {{student}} </h1>
 
     <div class="container-fluid">
-        {% if number_of_courses %}
-      <ul>
-          {% for course in courses %}
-            <li> {{course}} </li>
-          {% endfor %}
-      </ul>
-        {% else %}
-            <h2 class="text-center"> You haven't enrolled in any courses </h2>
-            <h3 class="text-center">See the courses page to enroll</h3>
-        {% endif %}
+        <h2 class="display-9">All courses you are enrolled in:</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td>Course</td>
+                    <td>Grades</td>
+                    <td>Date of enrollment</td>
+                </tr>
+            </thead>
+
+            {% if number_of_courses %}
+                <tbody>
+                    <tr>
+                        {% for course in courses %}
+                            <td>{{course}}</td>
+                            {% for enrollment in enrollments %}
+                                {% if enrollment.subject == course %}
+                                    <td>{{enrollment.grades_list}}</td>
+                                    <td>{{enrollment.date_enrolled}}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            {% else %}
+                <h2 class="text-center"> You haven't enrolled in any courses </h2>
+                <h3 class="text-center">See the courses page to enroll</h3>
+            {% endif %}
+        </table>
+
     </div>
 
 </div>

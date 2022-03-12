@@ -1,5 +1,6 @@
 # catalog_python
-
+Create a teacher account to use multiple CRUD operations or log in as a student
+to see the available courses to enroll and your grades for the courses you enrolled in.
 
 commands to run:
 pip install django
@@ -12,12 +13,3 @@ create a database and run:
 py manage.py migrate
 
 
-
-Teacher accounts(admin) where you can perform CRUD operations:
-username: teacher1;
-email: teacher1@studentsapp.com;
-password: 123hellohello;
-----------------------------
-username: teacher2;
-email: teacher2@studentsapp.com;
-password: hellohello123;

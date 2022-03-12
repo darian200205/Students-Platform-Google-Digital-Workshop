@@ -49,7 +49,8 @@ def subject_list(request):
         "subject_list.html",
         {
             "subjects": subjects,
-            "student_courses": student_courses
+            "student_courses": student_courses,
+            "group": group
         }
     )
 
@@ -81,14 +82,27 @@ def enrollment_list(request):
 @allowed_users(allowed_roles=['teachers'])
 def create_student(request):
     form = StudentForm()
+    user_form = CreateUserForm()
 
     if request.method == "POST":
         form = StudentForm(request.POST)
-        if form.is_valid():
-            form.save()
+        user_form = CreateUserForm(request.POST)
+        if form.is_valid() and user_form.is_valid():
+            user_form.instance.username = request.POST['email']
+            new_user = user_form.save()
+
+            student = form.save(commit=False)
+
+            if student.user_id is None:
+                student.user_id = new_user.id
+
+            student.save()
+            group = Group.objects.get(name='students')
+            group.user_set.add(new_user)
+
             return redirect('/student/list')
 
-    context = {'form': form}
+    context = {'form': form, 'user_form': user_form}
     return render(request, 'student_form.html', context)
 
 
@@ -176,11 +190,13 @@ def student_profile(request):
     student = request.user.student
     courses = student.subject_set.all()
     number_of_courses = student.subject_set.count()
+    enrollments = CourseEnrollment.objects.filter(student=student)
 
     context = {
         'student': student,
         'courses': courses,
-        'number_of_courses': number_of_courses
+        'number_of_courses': number_of_courses,
+        'enrollments': enrollments
     }
     return render(request, 'student_profile.html', context)
 
@@ -278,7 +294,7 @@ def delete_student(request, pk):
     student = Student.objects.get(id=pk)
 
     if request.method == "POST":
-        student.delete()
+        student.user.delete()
         return redirect('/student/list')
 
     return render(request, '/student/list')
