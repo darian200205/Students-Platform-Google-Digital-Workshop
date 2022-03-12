@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'students_app.apps.StudentsAppConfig',
+    'students_app',
     'crispy_forms'
 ]
 
@@ -71,6 +71,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'catalog_studenti.wsgi.application'
 

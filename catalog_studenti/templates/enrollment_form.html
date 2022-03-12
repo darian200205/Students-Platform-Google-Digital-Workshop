@@ -4,17 +4,17 @@
 
 {% block content %}
 
-    <h1>Inscriere</h1>
+    <h1>Enrollment</h1>
 
     <form action="" method="post">
         {% csrf_token %}
         {{form|crispy}}
 
         <button type="submit" class="btn btn-dark">
-            Inscrie
+            Enroll
         </button>
 
     </form>
     
 
-{% end-block %}
+{% endblock %}

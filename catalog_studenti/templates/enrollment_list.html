@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Lista de inscrieri</h1>
+    <h1>Enrollments list</h1>
     <table class="table table-responsive">
 
         <thead>
             <tr>
-                <td>Data</td>
-                <td>Nume student</td>
-                <td>Curs</td>
-                <td>Nota</td>
+                <td>Date</td>
+                <td>Student name</td>
+                <td>Course</td>
+                <td>Grade</td>
                 <td>
                     <a href="{% url 'create_enrollment' %}" class="btn btn-warning">
-                        Adauga
+                        Add
                     </a>
                 </td>
             </tr>
@@ -28,27 +28,27 @@
                     {% if enrollment.grades_list %}
                         <td>{{enrollment.grades_list}}</td>
                     {% else %}
-                        <td>Nicio nota</td>
+                        <td>None</td>
                     {% endif %}
 
                     <td>
 
-                        <a href="{% url 'update_enrollment' enrollment.id %}" class="btn btn-success">Editeaza</a>
+                        <a href="{% url 'update_enrollment' enrollment.id %}" class="btn btn-success">Edit</a>
                         <form action="{% url 'delete_enrollment' enrollment.id %}" method="post">
                             
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Sterge</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
                         </form>
 
                     </td>
 
                     <td>
                         
-                        <a href="{% url 'grade_enrollment' enrollment.id %}" class="btn btn-dark">Adauga nota</a>
+                        <a href="{% url 'grade_enrollment' enrollment.id %}" class="btn btn-dark">Grade student</a>
                        
                         <form action="{% url 'delete_grade' enrollment.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit" class="btn-danger">Sterge nota</button>
+                            <button type="submit" class="btn-danger">Delete grade</button>
                         </form>
                         
                     </td>
@@ -59,21 +59,5 @@
 
     </table>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                Pagina {{enrollments.number}} din {{number_of_pages}}
-
-                {% if enrollments.has_previous %}
-                    <a href="{% url 'enrollment_list' %}?page={{enrollments.previous_page_number}}" class="btn btn-primary">Inapoi</a>
-                {% endif %}
-
-                {% if enrollments.has_next %}
-                    <a href="{% url 'enrollment_list' %}?page={{enrollments.next_page_number}}" class="btn btn-primary">Urmatoarea</a>
-                {% endif %}
-
-            </div>
-        </div>
-    </div>
 
 {% endblock %}
