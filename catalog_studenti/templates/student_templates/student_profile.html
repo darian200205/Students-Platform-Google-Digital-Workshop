@@ -37,8 +37,9 @@
 
             {% if number_of_courses %}
                 <tbody>
-                    <tr>
+
                         {% for course in courses %}
+                        <tr>
                             <td>{{course}}</td>
                             {% for enrollment in enrollments %}
                                 {% if enrollment.subject == course %}
@@ -46,8 +47,9 @@
                                     <td>{{enrollment.date_enrolled}}</td>
                                 {% endif %}
                             {% endfor %}
+                        </tr>
                         {% endfor %}
-                    </tr>
+
                 </tbody>
             {% else %}
                 <h2 class="text-center"> You haven't enrolled in any courses </h2>
