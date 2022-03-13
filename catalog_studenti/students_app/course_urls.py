@@ -1,5 +1,5 @@
 from django.urls import path
-from catalog_studenti.students_app.course_services import course_views
+from .course_services import course_views
 
 urlpatterns = [
     path('list/', course_views.subject_list, name='subject_list'),
