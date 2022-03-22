@@ -26,7 +26,7 @@
 
     <div class="container-fluid">
         <h2 class="display-9">All courses you are enrolled in:</h2>
-        <table class="table table-bordered">
+        <table class="table table-bordered text-light">
             <thead>
                 <tr>
                     <td>Course</td>
@@ -37,7 +37,6 @@
 
             {% if number_of_courses %}
                 <tbody>
-
                         {% for course in courses %}
                         <tr>
                             <td>{{course}}</td>
